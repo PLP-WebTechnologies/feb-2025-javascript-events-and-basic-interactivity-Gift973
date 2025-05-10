@@ -1,0 +1,230 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Interactive Bundle of Joy</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      padding: 20px;
+      background: #f0f4f8;
+    }
+    button, input {
+      padding: 10px 20px;
+      margin: 10px 0;
+      cursor: pointer;
+    }
+    #colorButton {
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      transition: background-color 0.3s ease;
+    }
+    #colorButton:hover {
+      background-color: #0056b3;
+    }
+    #keyDisplay {
+      margin-top: 10px;
+      font-weight: bold;
+      color: #333;
+    }
+    .slideshow img {
+      width: 300px;
+      height: 200px;
+      border-radius: 8px;
+      display: none;
+    }
+    .slideshow img.active {
+      display: block;
+      animation: fadeIn 0.5s;
+    }
+    @keyframes fadeIn {
+      from {opacity: 0;}
+      to {opacity: 1;}
+    }
+    .tabs {
+      margin-top: 20px;
+    }
+    .tab-buttons button {
+      background: #eee;
+      border: none;
+      margin-right: 5px;
+      padding: 10px;
+      border-radius: 5px 5px 0 0;
+    }
+    .tab-buttons button.active {
+      background: #007BFF;
+      color: white;
+    }
+    .tab-content {
+      background: white;
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-top: none;
+      display: none;
+    }
+    .tab-content.active {
+      display: block;
+    }
+    form {
+      margin-top: 30px;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    }
+    .error {
+      color: red;
+      font-size: 0.9em;
+    }
+    .success {
+      color: green;
+      font-size: 0.9em;
+    }
+  </style>
+</head>
+<body>
+
+<h1>🎉 Interactive Bundle of Joy 🎉</h1>
+
+<!-- Button with Click and Double Click -->
+<button id="colorButton">Click Me!</button>
+
+<p id="keyDisplay"></p>
+
+<!-- Slideshow / Image Gallery -->
+<div class="slideshow">
+  <img src="https://via.placeholder.com/300x200/007BFF/ffffff?text=Slide+1" class="active" alt="Slide 1">
+  <img src="https://via.placeholder.com/300x200/28a745/ffffff?text=Slide+2" alt="Slide 2">
+  <img src="https://via.placeholder.com/300x200/dc3545/ffffff?text=Slide+3" alt="Slide 3">
+</div>
+<button id="nextSlide">Next Slide</button>
+
+<!-- Tabs -->
+<div class="tabs">
+  <div class="tab-buttons">
+    <button class="tab-btn active" data-tab="tab1">Tab 1</button>
+    <button class="tab-btn" data-tab="tab2">Tab 2</button>
+    <button class="tab-btn" data-tab="tab3">Tab 3</button>
+  </div>
+  <div id="tab1" class="tab-content active">
+    <p>This is content for Tab 1.</p>
+  </div>
+  <div id="tab2" class="tab-content">
+    <p>This is content for Tab 2.</p>
+  </div>
+  <div id="tab3" class="tab-content">
+    <p>This is content for Tab 3.</p>
+  </div>
+</div>
+
+<!-- Form Validation -->
+<form id="myForm">
+  <h2>Sign Up Form</h2>
+  <label>Name: <input type="text" id="name" required></label><br>
+  <label>Email: <input type="email" id="email" required></label><br>
+  <label>Password: <input type="password" id="password" required></label><br>
+  <button type="submit">Submit</button>
+  <div id="formMessage"></div>
+</form>
+
+<script>
+  // Button Click and Double Click
+  const colorButton = document.getElementById('colorButton');
+  let clicked = false;
+
+  colorButton.addEventListener('click', () => {
+    clicked = !clicked;
+    colorButton.textContent = clicked ? "You Clicked Me!" : "Click Me!";
+    colorButton.style.backgroundColor = clicked ? "#28a745" : "#007BFF";
+  });
+
+  colorButton.addEventListener('dblclick', () => {
+    document.body.style.backgroundColor = "#ffe4e1"; // Secret double-click action
+    alert("🎉 Secret Unlocked!");
+  });
+
+  // Keypress Detection
+  document.addEventListener('keypress', (e) => {
+    document.getElementById('keyDisplay').textContent = `You pressed: ${e.key}`;
+  });
+
+  // Slideshow
+  const slides = document.querySelectorAll('.slideshow img');
+  let currentSlide = 0;
+  const nextSlideButton = document.getElementById('nextSlide');
+
+  nextSlideButton.addEventListener('click', () => {
+    slides[currentSlide].classList.remove('active');
+    currentSlide = (currentSlide + 1) % slides.length;
+    slides[currentSlide].classList.add('active');
+  });
+
+  // Tabs
+  const tabButtons = document.querySelectorAll('.tab-btn');
+  const tabContents = document.querySelectorAll('.tab-content');
+
+  tabButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      tabButtons.forEach(btn => btn.classList.remove('active'));
+      tabContents.forEach(content => content.classList.remove('active'));
+      
+      button.classList.add('active');
+      document.getElementById(button.dataset.tab).classList.add('active');
+    });
+  });
+
+  // Form Validation
+  const form = document.getElementById('myForm');
+  const nameInput = document.getElementById('name');
+  const emailInput = document.getElementById('email');
+  const passwordInput = document.getElementById('password');
+  const formMessage = document.getElementById('formMessage');
+
+  function validateEmail(email) {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(email);
+  }
+
+  function validateForm() {
+    let errors = [];
+    if (nameInput.value.trim() === "") {
+      errors.push("Name is required.");
+    }
+    if (!validateEmail(emailInput.value)) {
+      errors.push("Valid email is required.");
+    }
+    if (passwordInput.value.length < 8) {
+      errors.push("Password must be at least 8 characters.");
+    }
+    return errors;
+  }
+
+  // Real-time validation
+  [nameInput, emailInput, passwordInput].forEach(input => {
+    input.addEventListener('input', () => {
+      const errors = validateForm();
+      if (errors.length === 0) {
+        formMessage.innerHTML = '<p class="success">All good!</p>';
+      } else {
+        formMessage.innerHTML = '<p class="error">' + errors[0] + '</p>';
+      }
+    });
+  });
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const errors = validateForm();
+    if (errors.length > 0) {
+      formMessage.innerHTML = '<p class="error">' + errors.join('<br>') + '</p>';
+    } else {
+      formMessage.innerHTML = '<p class="success">Form submitted successfully!</p>';
+      form.reset();
+    }
+  });
+</script>
+
+</body>
+</html>
